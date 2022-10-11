@@ -1,6 +1,6 @@
 import logging
 from aiogram import Bot, Dispatcher, executor
-from aiogram.types import Message
+from aiogram.types import Message, ParseMode
 
 from config_data.config import BOT_TOKEN
 
@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, filename='mc_log.log', filemode='w')
 
 # Initialize bot and dispatcher
 
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher(bot=bot)
 
 # creating a new branch
