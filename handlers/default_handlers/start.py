@@ -6,7 +6,7 @@ from aiogram.types import Message
 async def hullo(message: Message) -> None:
     """A func for sending some good ol' 'Hullo'! """
 
-    await message.reply("<i>Hullo</i>!")
+    await message.answer("<b><i>Hello!</i></b>\nType /menu to really start!")
 
 
 @dp.message_handler(commands="dice")
