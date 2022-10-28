@@ -5,6 +5,7 @@ from aiogram.dispatcher.filters import Text
 # from database.master_db import da_base, cur
 
 import sqlite3
+import asyncio
 
 da_base = sqlite3.connect(r'C:\Me\Coding_Python\Projects\Magic_Chill\database\songs.db', check_same_thread=False)
 cur = da_base.cursor()
@@ -50,7 +51,8 @@ async def random_song_start(message: types.Message) -> None:
 async def random_eli_start(call: types.CallbackQuery) -> None:
     """Sending a keyboard to user for elizarov randomizing"""
 
-    await call.message.answer(text='Choose a button!', reply_markup=random_songs_inlines.eli_menu())
+    await call.message.answer(text='Елизаров! Choose a button!', reply_markup=random_songs_inlines.eli_menu())
+    await call.answer()
 
 
 @dp.callback_query_handler(Text(startswith="eb_"))
@@ -64,12 +66,13 @@ async def random_eli_pick(call: types.CallbackQuery) -> None:
     random_song_exec = cur.execute(sql_req)
     randomized_song = random_song_exec.fetchall()[0][0]
 
-    await call.message.answer(text=randomized_song,
-                              reply_markup=random_songs_inlines.go_to_menu(
-                                  youtube_song_name=youtube_search(randomized_song, "Елизаров"),
-                                  yandex_song_name=yandex_search(randomized_song))
-                              )
+    msg = await call.message.answer(text=randomized_song,
+                                    reply_markup=random_songs_inlines.go_to_menu(
+                                        youtube_song_name=youtube_search(randomized_song, "Елизаров"),
+                                        yandex_song_name=yandex_search(randomized_song)))
     await call.answer()
+    await asyncio.sleep(15)
+    await msg.delete()
 
 
 # Rammstein Part
@@ -77,7 +80,8 @@ async def random_eli_pick(call: types.CallbackQuery) -> None:
 async def random_ramm_start(call: types.CallbackQuery) -> None:
     """Sending a keyboard to user for rammstein randomizing"""
 
-    await call.message.answer(text='Choose a button!', reply_markup=random_songs_inlines.ramm_menu())
+    await call.message.answer(text='Rammstein! Choose a button!', reply_markup=random_songs_inlines.ramm_menu())
+    await call.answer()
 
 
 @dp.callback_query_handler(Text(startswith="rb_"))
@@ -91,9 +95,45 @@ async def random_ramm_pick(call: types.CallbackQuery) -> None:
     random_song_exec = cur.execute(sql_req)
     randomized_song = random_song_exec.fetchall()[0][0]
 
-    await call.message.answer(text=randomized_song,
-                              reply_markup=random_songs_inlines.go_to_menu(
-                                  youtube_song_name=youtube_search(randomized_song, "Rammstein"),
-                                  yandex_song_name=yandex_search(randomized_song)
-                              ))
+    msg = await call.message.answer(text=randomized_song,
+                                    reply_markup=random_songs_inlines.go_to_menu
+                                        (
+                                        youtube_song_name=youtube_search(randomized_song, "Rammstein"),
+                                        yandex_song_name=yandex_search(randomized_song))
+
+                                        )
+
     await call.answer()
+    await asyncio.sleep(15)
+    await msg.delete()
+
+
+# The King and the Jester part
+
+@dp.callback_query_handler(text='kaj')
+async def random_ramm_start(call: types.CallbackQuery) -> None:
+    """Sending a keyboard to user for rammstein randomizing"""
+
+    await call.message.answer(text='Король и Шут! Choose a button!', reply_markup=random_songs_inlines.kaj_menu())
+    await call.answer()
+
+
+@dp.callback_query_handler(Text(startswith='kb'))
+async def random_kaj_pick(call: types.CallbackQuery) -> None:
+    """Choosing the button to randomize a rammstein-song at last"""
+
+    tab_name = 'kaj_songs'
+    button_colour = call.data[3:]
+    sql_req = sql_song_req(tab_name=tab_name, but_colour=button_colour)
+
+    random_song_exec = cur.execute(sql_req)
+    randomized_song = random_song_exec.fetchall()[0][0]
+
+    msg = await call.message.answer(text=randomized_song,
+                                    reply_markup=random_songs_inlines.go_to_menu(
+                                        youtube_song_name=youtube_search(randomized_song, "Король+и+шут"),
+                                        yandex_song_name=yandex_search(randomized_song)))
+
+    await call.answer()
+    await asyncio.sleep(15)
+    await msg.delete()
